@@ -88,7 +88,11 @@ Estimativa mensal aproximada (região us-east-1, tráfego moderado). Detalhament
 Desenvolvido pelo **Team 3** — Escola da Nuvem:
 
 - Vagner Tomaz dos Santos
-- *(preencher demais integrantes)*
+- Jefferson Da Mata Dos Reis
+- Daniel Victor Moreira Braga
+- Evandro Gomes Lemos
+- Daniel Tadao Silva Shimada
+- Marcos Roberto De Andrade
 
 ## 📄 Licença
 
