@@ -1,6 +1,9 @@
+[decisoes-tecnicas.md](https://github.com/user-attachments/files/30158893/decisoes-tecnicas.md)
 # Justificativa das Escolhas Técnicas
 
 A definição da arquitetura não decorreu da adoção automática dos serviços mais populares da AWS, mas de um processo de avaliação de alternativas, ponderando requisitos do problema, custo, complexidade operacional e adequação ao perfil de tráfego da Escola Tech.
+
+**Alinhamento com o AWS Well-Architected Framework**: as decisões documentadas neste arquivo seguem os seis pilares do framework oficial da AWS para avaliação de arquiteturas — Excelência Operacional, Segurança, Confiabilidade, Eficiência de Desempenho, Otimização de Custos e Sustentabilidade. Cada seção abaixo indica, quando pertinente, a qual pilar a decisão está mais diretamente associada.
 
 ## 1. Camada de borda: Route 53, CloudFront e AWS WAF
 
@@ -60,8 +63,45 @@ A terminação SSL/TLS ocorre tanto no CloudFront quanto no Application Load Bal
 
 ## 8. Controles de segurança adicionais
 
-Complementando os Security Groups em camadas — o ALB aceita tráfego nas portas 80/443 exclusivamente do prefixo gerenciado do CloudFront (não da internet aberta), e o EC2 aceita apenas tráfego do Security Group do ALB —, a arquitetura adota três controles alinhados ao pilar de Segurança do AWS Well-Architected Framework:
+*Pilar: Segurança.* Complementando os Security Groups em camadas — o ALB aceita tráfego nas portas 80/443 exclusivamente do prefixo gerenciado do CloudFront (não da internet aberta), e o EC2 aceita apenas tráfego do Security Group do ALB —, a arquitetura adota três controles alinhados ao pilar de Segurança do AWS Well-Architected Framework:
 
 - **IAM com privilégio mínimo**: cada instância EC2 recebe uma IAM Role restrita aos recursos que efetivamente utiliza (S3, RDS), sem permissões administrativas amplas.
 - **AWS Secrets Manager**: credenciais de acesso ao RDS não ficam em código-fonte ou variáveis de ambiente estáticas, sendo recuperadas dinamicamente em tempo de execução.
 - **Criptografia em repouso e em trânsito**: dados no RDS e no S3 criptografados com AES-256; comunicação sempre via HTTPS/TLS.
+
+## 9. Ameaças mitigadas pela arquitetura
+
+*Pilar: Segurança.* A arquitetura foi desenhada considerando os vetores de ataque mais comuns a aplicações web:
+
+| Ameaça | Mitigação na arquitetura |
+|---|---|
+| DDoS (negação de serviço distribuída) | CloudFront absorve e distribui o tráfego globalmente; AWS WAF filtra padrões de tráfego malicioso antes de chegar ao ALB |
+| SQL Injection | Regras gerenciadas do AWS WAF (Core Rule Set) bloqueiam payloads conhecidos antes de atingir a aplicação |
+| XSS (Cross-Site Scripting) | Regras gerenciadas do WAF; complementarmente, a aplicação deve realizar sanitização de entrada (fora do escopo de infraestrutura) |
+| Força bruta / credential stuffing | AWS WAF com rate-based rules limita tentativas repetidas por IP |
+| Phishing e engenharia social | Fora do escopo de infraestrutura — depende de conscientização do usuário final, não é mitigável apenas com serviços AWS |
+| Exposição de credenciais | AWS Secrets Manager elimina credenciais em texto puro no código ou em variáveis de ambiente estáticas |
+
+**Observabilidade e auditoria** *(Pilar: Excelência Operacional)*: complementando o Amazon CloudWatch (métricas e alarmes que disparam o Auto Scaling), a arquitetura considera o uso do **AWS Config** para auditar continuamente a conformidade da configuração dos recursos com as políticas definidas, e do **AWS CloudTrail** para registrar todas as chamadas de API realizadas na conta, essencial para investigação forense em caso de incidente.
+
+**Alinhamento com frameworks de segurança**: é importante frisar que este projeto **se alinha aos princípios** de frameworks como OWASP (secure by design), NIST Cybersecurity Framework (pilares de Proteger e Detectar) e ISO 27001 (boas práticas de gestão de segurança da informação) — mas não pode ser declarado "em conformidade" (compliance) com esses frameworks no sentido formal, já que isso exigiria auditoria externa e certificação, fora do escopo de um projeto acadêmico. O termo tecnicamente correto para a documentação é "arquitetura alinhada às diretrizes de", não "em conformidade com".
+
+## 10. Classificação dos serviços por modelo de nuvem (IaaS/PaaS/SaaS)
+
+![Classificação IaaS, PaaS e SaaS](arquitetura/iaas-paas-saas.png)
+
+Como fundamentação teórica, os serviços utilizados no projeto podem ser classificados conforme o grau de gerenciamento assumido pela AWS:
+
+- **IaaS** (o grupo gerencia o sistema operacional): EC2, VPC, NAT Gateway.
+- **PaaS** (a AWS gerencia a plataforma, o grupo configura): RDS, Auto Scaling, Application Load Balancer.
+- **SaaS** (serviço pronto para consumo via API/console): S3, CloudFront, Route 53.
+
+Essa fronteira é didática, não absoluta — parte da literatura trata serviços de rede gerenciados (como o ALB) como uma categoria à parte ("networking as a service"), mas a classificação acima é suficiente para demonstrar o entendimento dos três modelos de computação em nuvem estudados no curso.
+
+## 11. Roadmap futuro (fora do escopo atual)
+
+Os itens abaixo foram considerados, mas não fazem parte da entrega atual — ficam registrados como evolução natural do projeto:
+
+- **CI/CD**: pipeline via GitHub Actions para automatizar deploy da aplicação e da infraestrutura a cada push. Um workflow ilustrativo (gatilho manual, sem execução em produção) já está documentado em `.github/workflows/deploy.yml`, demonstrando a estrutura do pipeline proposto.
+- **Mensageria**: Amazon SNS para notificações de alertas de custo (integrado ao AWS Budgets) e de segurança.
+- **Dashboards avançados**: Amazon QuickSight ou Grafana para relatórios de negócio (ex: volume de matrículas por período), complementando os dashboards operacionais do CloudWatch.
