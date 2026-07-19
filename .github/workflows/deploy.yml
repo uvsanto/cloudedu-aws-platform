@@ -1,0 +1,78 @@
+# CloudEdu AWS Platform — Workflow de deploy (exemplo ilustrativo)
+#
+# Este workflow demonstra COMO um pipeline de CI/CD seria estruturado para
+# este projeto, seguindo o padrão de mercado (GitHub Actions + IaC).
+#
+# STATUS: roadmap / próximo passo — não foi executado em produção.
+# O gatilho é manual (workflow_dispatch) justamente para não rodar
+# automaticamente a cada commit e falhar publicamente, já que os
+# scripts de Infraestrutura como Código (pasta infraestrutura/) ainda
+# não existem neste repositório.
+#
+# Para ativar de verdade, seria necessário:
+#   1. Criar os scripts de IaC reais em infraestrutura/ (Terraform ou CloudFormation)
+#   2. Cadastrar as credenciais da AWS como Secrets do repositório
+#      (Settings > Secrets and variables > Actions):
+#        - AWS_ACCESS_KEY_ID
+#        - AWS_SECRET_ACCESS_KEY
+#        - AWS_REGION
+#   3. Trocar o gatilho abaixo de workflow_dispatch para push, se desejado
+
+name: Deploy CloudEdu AWS Platform (exemplo)
+
+on:
+  workflow_dispatch:
+    inputs:
+      ambiente:
+        description: "Ambiente de destino"
+        required: true
+        default: "homologacao"
+        type: choice
+        options:
+          - homologacao
+          - producao
+
+jobs:
+  validar-infraestrutura:
+    name: Validar templates de IaC
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar credenciais AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # Placeholder: validação dos templates de IaC (ex: terraform validate,
+      # ou aws cloudformation validate-template). Ajustar conforme a
+      # ferramenta de IaC escolhida pelo grupo.
+      - name: Validar templates (placeholder)
+        run: |
+          echo "Aqui entraria a validação real dos templates em infraestrutura/"
+          echo "Exemplo: terraform -chdir=infraestrutura validate"
+
+  deploy:
+    name: Deploy da infraestrutura
+    needs: validar-infraestrutura
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.ambiente }}
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar credenciais AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # Placeholder: aplicação real da infraestrutura.
+      - name: Deploy (placeholder)
+        run: |
+          echo "Aqui entraria o deploy real, ex: terraform -chdir=infraestrutura apply -auto-approve"
+          echo "Ambiente selecionado: ${{ inputs.ambiente }}"
