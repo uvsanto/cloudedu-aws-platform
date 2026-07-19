@@ -1,3 +1,4 @@
+[custos.md](https://github.com/user-attachments/files/30158909/custos.md)
 # Estimativa de Custos
 
 Estimativa mensal aproximada, região us-east-1, tráfego moderado com picos sazonais durante campanhas de matrícula.
