@@ -1,5 +1,5 @@
 [README.md](https://github.com/user-attachments/files/30143556/README.md)
-# CloudEdu AWS Platform (docs/Copilot_20260722_014221.png)
+# CloudEdu AWS Platform docs/Copilot_20260722_014221.png
 
 Projeto de Trabalho de Conclusão de Curso (TCC) — Escola da Nuvem, Team 3.
 
