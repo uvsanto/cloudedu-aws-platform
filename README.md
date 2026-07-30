@@ -372,6 +372,19 @@ Alinhamento às melhores práticas do AWS Well-Architected Framework, especialme
 - **Ferramentas**: AWS Budgets (alertas 50/80/100%), Cost Explorer, Cost Anomaly Detection, Compute Optimizer, tagging para alocação de custos.  
 - **Práticas**: desligamento automático de ambientes não críticos, uso de Spot Instances quando aplicável, rightsizing periódico.
 
+| Ferramenta                          | Finalidade                                                                          |
+| ----------------------------------- | ----------------------------------------------------------------------------------- |
+| **AWS Cost Explorer**               | Visualização e análise detalhada dos custos ao longo do tempo.                      |
+| **AWS Budgets**                     | Definição de orçamentos e envio de alertas automáticos.                             |
+| **AWS Cost Anomaly Detection**      | Identificação automática de comportamentos anormais nos custos.                     |
+| **AWS Trusted Advisor**             | Recomendações para otimização de recursos e redução de despesas.                    |
+| **AWS Pricing Calculator**          | Estimativa prévia dos custos da arquitetura antes da implantação.                   |
+| **Cost Allocation Tags**            | Classificação de recursos por projeto, ambiente ou centro de custo.                 |
+| **AWS Billing and Cost Management** | Consolidação das informações financeiras da conta AWS.                              |
+| **AWS Organizations**               | Gerenciamento centralizado de múltiplas contas e cobrança consolidada.              |
+| **AWS Control Tower**               | Padronização da governança e do gerenciamento financeiro em ambientes corporativos. |
+
+
 Boas práticas para gestão de custos na AWS
 
 A estratégia de gerenciamento financeiro adotada neste projeto está baseada em quatro pilares: Monitorar, Economizar, Planejar e Executar.
