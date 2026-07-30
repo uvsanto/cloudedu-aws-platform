@@ -153,3 +153,160 @@ aws cloudformation create-stack --stack-name cloudedu --template-body file://inf
 
 # atualizar stack
 aws cloudformation update-stack --stack-name cloudedu --template-body file://infraestrutura/template.yaml --capabilities CAPABILITY_NAMED_IAM
+
+# FAQ da Banca — CloudEdu AWS Platform
+
+**Objetivo:** respostas objetivas e referenciadas para as perguntas mais prováveis da banca.
+
+---
+
+## 1. Por que escolher a AWS para este projeto?
+**Resposta:** A AWS foi escolhida por sua maturidade de mercado, amplitude de serviços, integração nativa entre componentes (ex.: CloudFront + WAF + ALB) e por ser a plataforma utilizada na formação da Escola da Nuvem. A decisão foi baseada em critérios técnicos (capacidade, integração, custos e suporte a práticas Well‑Architected), não apenas em preferência.
+
+---
+
+## 2. Por que EC2 em vez de ECS/EKS ou Serverless inicialmente?
+**Resposta:** O objetivo do TCC é demonstrar fundamentos de IaaS (SO, Security Groups, Auto Scaling, health checks). EC2 permite explorar esses conceitos de forma didática. ECS/EKS e Serverless estão previstos no roadmap como evolução para reduzir esforço operacional e aumentar portabilidade.
+
+---
+
+## 3. Como a arquitetura garante alta disponibilidade?
+**Resposta:** Multi‑AZ para EC2 e RDS, Application Load Balancer com health checks, Auto Scaling para recriar capacidade em zonas saudáveis e RDS Multi‑AZ com failover automático. Esses elementos combinados reduzem risco de downtime por falha de AZ.
+
+---
+
+## 4. Como a solução controla custos e evita estouro de orçamento?
+**Resposta:** Implementação de FinOps: AWS Budgets com alertas (50/80/100%), Cost Explorer, Cost Anomaly Detection, tagging para alocação de custos, políticas de desligamento automático e uso de Spot/rightsizing quando aplicável.
+
+---
+
+## 5. Como a arquitetura atende à LGPD?
+**Resposta:** Criptografia em trânsito (TLS) e em repouso (KMS), gerenciamento de segredos via Secrets Manager, controle de acesso via IAM com princípio do menor privilégio, auditoria com CloudTrail e monitoramento contínuo com GuardDuty e Security Hub. Observação: conformidade formal exige auditoria externa.
+
+---
+
+## 6. Quais pilares do Well‑Architected foram priorizados?
+**Resposta:** Todos os seis pilares: Excelência Operacional, Segurança, Confiabilidade, Eficiência de Performance, Otimização de Custos e Sustentabilidade. Cada decisão técnica foi mapeada para um ou mais pilares (ver `docs/decisoes-tecnicas.md`).
+
+---
+
+## 7. O que acontece se uma Availability Zone ficar indisponível?
+**Resposta:** ALB para de rotear para instâncias na AZ afetada; Auto Scaling recria instâncias em AZs saudáveis; RDS Multi‑AZ faz failover para a réplica. Impacto mínimo ao usuário final.
+
+---
+
+## 8. Por que não usar Cloudflare em vez do AWS WAF?
+**Resposta:** AWS WAF foi escolhido pela integração nativa com CloudFront e ALB, simplificando gestão centralizada. Cloudflare é uma alternativa válida em cenários onde custo/latência ou funcionalidades específicas (ex.: CDN global com planos gratuitos) sejam mais vantajosas; pode ser reavaliado em otimizações futuras.
+
+---
+
+## 9. Como validaram que a arquitetura suporta picos?
+**Resposta:** Projeto baseado em padrões AWS (ALB + Auto Scaling + CloudFront). Testes de carga reais são recomendados como próximo passo; o TCC documenta o roteiro de testes e as métricas esperadas (throughput, latência, erros).
+
+---
+
+## 10. Quais são os riscos técnicos remanescentes?
+**Resposta:** riscos incluem configuração incorreta de IAM, custos por recursos esquecidos (NAT Gateway), e dependência de RDS gerenciado. Mitigações: políticas IaC com validação, automações de limpeza e alertas FinOps.
+
+---
+
+## 11. Como é feita a observabilidade?
+**Resposta:** CloudWatch (métricas, logs, dashboards), CloudWatch Alarms, CloudTrail (auditoria), X‑Ray (tracing), ADOT/OpenTelemetry e integração opcional com Grafana/Prometheus.
+
+---
+
+## 12. Se o orçamento for reduzido pela metade, o que muda?
+**Resposta:** Priorizar disponibilidade e segurança; migrar para Modelo A (Free Tier) temporariamente, reduzir capacidade, usar instâncias menores/Spot, e intensificar práticas de FinOps.
+
+---
+
+## 13. Quais próximos passos para produção?
+**Resposta:** testes de carga, pipelines CI/CD completos, políticas de backup e DR testadas, auditoria de segurança, definição de SLAs/SLOs e automações de resposta a incidentes.
+
+---
+
+## 14. Referências rápidas
+- Arquitetura e decisões técnicas: `docs/decisoes-tecnicas.md`  
+- Custos detalhados: `docs/custos.md`  
+- Materiais de defesa: `docs/apresentacao/`
+
+# Speech — Roteiro de Apresentação (3–5 minutos)
+
+**Duração estimada:** 3 a 5 minutos  
+**Estrutura:** 6 slides, 30–50 segundos por slide
+
+---
+
+## Slide 1 — Abertura (20–30s)
+**Fala:**  
+“Bom dia/tarde. Somos o Team 3 da Escola da Nuvem. Apresentamos o CloudEdu AWS Platform — uma arquitetura de referência para a Escola Tech, projetada para garantir disponibilidade durante picos de matrícula, reduzir latência e controlar custos. Em 5 minutos mostro o problema, a solução, resultados esperados e próximos passos.”
+
+**Objetivo do slide:** contextualizar problema e objetivo do projeto.
+
+---
+
+## Slide 2 — Problema e Requisitos (30–40s)
+**Fala:**  
+“A Escola Tech sofria indisponibilidade em campanhas de marketing por falta de elasticidade e redundância. Requisitos: alta disponibilidade, elasticidade automática, segurança, observabilidade e custo controlado. Nosso projeto atende a todos esses pontos.”
+
+**Dica:** citar 2‑3 métricas alvo (ex.: disponibilidade 99,9%; latência média alvo 120ms).
+
+---
+
+## Slide 3 — Arquitetura (40–50s)
+**Fala:**  
+“Arquitetura: Route 53 → CloudFront → WAF → ALB → EC2 em Auto Scaling (multi‑AZ). Dados em RDS Multi‑AZ; assets em S3. Observabilidade com CloudWatch/X‑Ray; segurança com IAM, KMS, Secrets Manager, GuardDuty. Essa combinação garante resiliência e governança.”
+
+**Objetivo:** mostrar o diagrama e destacar componentes críticos.
+
+---
+
+## Slide 4 — Modelos e Custos (30–40s)
+**Fala:**  
+“Oferecemos dois modelos: Modelo A (Free Tier) para estudos e PoC; Modelo B (Enterprise) para produção. Estimativa para tráfego moderado (região sa‑east‑1): R$ 420–500/mês. Políticas FinOps e Budgets protegem o orçamento.”
+
+**Dica:** mencionar o teto orçamentário e alertas (50/80/100%).
+
+---
+
+## Slide 5 — Segurança, Observabilidade e DR (30–40s)
+**Fala:**  
+“Segurança em camadas: WAF, Security Groups, KMS, Secrets Manager e auditoria com CloudTrail. Observabilidade com CloudWatch/X‑Ray e alertas via SNS. DR: backups RDS, versionamento S3 e possibilidade de restauração em outra região.”
+
+**Objetivo:** tranquilizar sobre proteção e continuidade.
+
+---
+
+## Slide 6 — Conclusão e Roadmap (30–40s)
+**Fala:**  
+“Conclusão: arquitetura madura, alinhada ao Well‑Architected Framework e práticas FinOps. Próximos passos: testes de carga, CI/CD completo, migração gradual para contêineres/Serverless e integração de observabilidade avançada. Obrigado — estamos prontos para perguntas.”
+
+**Fechamento:** abrir para perguntas da banca.
+
+---
+
+## Notas para apresentação oral
+- Fale devagar e com clareza; use o diagrama como guia visual.  
+- Tenha 3 evidências rápidas à mão (print CloudWatch, alerta Budgets, log de deploy).  
+- Se a banca pedir detalhes técnicos, direcione para `docs/decisoes-tecnicas.md` e `docs/apresentacao/Perguntas-Dificeis.md`.
+
+
+## 🧑🏻‍💻 Autores
+
+Desenvolvido pelo **Team 3** — Escola da Nuvem:
+
+Jefferson Da Mata Dos Reis — https://github.com/ReisxJeff
+
+Daniel Victor Moreira Braga
+
+Evandro Gomes Lemos — https://www.linkedin.com/in/evandrogomeslemos/ (linkedin.com in Bing)
+
+Daniel Tadao Silva Shimada — https://github.com/DanielTadao (github.com in Bing)
+
+Vagner Tomaz dos Santos — https://github.com/uvsanto
+
+Marcos Roberto De Andrade — https://github.com/MarcosRobertodeAndrade01 (github.com in Bing)
+
+## 📄 Licença
+
+*Este projeto está licenciado sob os termos da MIT License. Consulte o arquivo LICENSE.*
