@@ -5,7 +5,7 @@
 ### Projeto de Trabalho de Conclusão de Curso (TCC) 
 
 Arquitetura de referência em Amazon Web Services (AWS) para hospedagem resiliente, escalável, segura e otimizada em custos da plataforma fictícia **Escola Tech**, desenvolvida para suportar grandes campanhas de matrícula com alta disponibilidade e excelente experiência do usuário.
-<img src="docs/logogrupo.png"/>
+<img src="docs/Itens do nosso projeto.png"/>
 
 
 </div>
@@ -23,14 +23,24 @@ Arquitetura de referência em Amazon Web Services (AWS) para hospedagem resilien
 O CloudEdu AWS Platform, desenvolvido pelo Team 3 da Escola da Nuvem, apresenta uma arquitetura de referência em Amazon Web Services (AWS) para a plataforma fictícia Escola Tech.
 O objetivo é demonstrar como a nuvem pode oferecer alta disponibilidade, elasticidade, segurança em múltiplas camadas, observabilidade e controle de custos em cenários de grande demanda.
 
+<img src="docs/logogrupo.png"/>
+
 O projeto contempla dois cenários complementares:
 
 Modelo A (Free Tier / Acadêmico): explora a viabilidade de construir uma solução funcional na AWS utilizando créditos e serviços gratuitos, sem custo inicial.
 
 Modelo B (Enterprise): simula um ambiente corporativo com orçamento controlado de R$ 2.000/mês, ajustável em períodos críticos de matrícula e rematrícula, assegurando previsibilidade tecnológica e financeira.
+
+<img src="docs/comparativo de arquiteturas.png"/>
 ---
 
+
 ## ✅ Conformidade com Frameworks
+
+A adoção dos principais frameworks de arquitetura, segurança, operações e governança demonstra que o CloudEdu AWS Platform foi projetado seguindo boas práticas reconhecidas pelo mercado. Essa abordagem aumenta a qualidade técnica da solução, reduz riscos operacionais e facilita sua evolução para ambientes corporativos.
+
+
+
 | Framework | Status |
 |---|:---:|
 | AWS Well-Architected Framework | ✅ |
@@ -42,6 +52,22 @@ Modelo B (Enterprise): simula um ambiente corporativo com orçamento controlado 
 | NIST Cybersecurity Framework | ✅ |
 | Observabilidade | ✅ |
 
+<img src="docs/ganhos framework.png"/>
+
+Benefícios Globais da Adoção desses Frameworks
+
+A combinação desses frameworks proporciona benefícios estratégicos para o projeto e para a organização, entre eles:
+
+Arquitetura alinhada às melhores práticas internacionais.
+Maior disponibilidade e confiabilidade da aplicação.
+Escalabilidade e elasticidade para suportar picos de acesso.
+Segurança em múltiplas camadas, reduzindo riscos cibernéticos.
+Governança mais eficiente dos recursos em nuvem.
+Controle financeiro baseado nos princípios do FinOps.
+Monitoramento contínuo e resposta rápida a incidentes.
+Conformidade com requisitos regulatórios, como a LGPD.
+Facilidade de manutenção, evolução e expansão da infraestrutura.
+Base preparada para adoção futura de arquiteturas Cloud Native, microsserviços, contêineres e soluções de Inteligência Artificial.
 ---
 
 ## ✅ Principais Características
@@ -59,6 +85,21 @@ Modelo B (Enterprise): simula um ambiente corporativo com orçamento controlado 
 | Multi-AZ | ✅ |
 | Comparativo Multi-Cloud | ✅ |
 
+Benefícios Estratégicos da Arquitetura
+
+A combinação dessas características proporciona benefícios que vão além da infraestrutura tecnológica, contribuindo diretamente para os objetivos de negócio da Escola Tech:
+
+Disponibilidade contínua do portal de matrículas.
+Melhor experiência para alunos e candidatos, mesmo durante campanhas de grande alcance.
+Redução do risco de perda de inscrições por indisisponibilidade do sistema.
+Crescimento sustentável da plataforma sem necessidade de grandes reestruturações.
+Maior eficiência operacional por meio da automação de processos.
+Segurança reforçada para proteção dos dados pessoais e acadêmicos.
+Gestão financeira eficiente com monitoramento contínuo dos custos.
+Facilidade para evolução da solução com novos serviços e funcionalidades da AWS.
+Arquitetura preparada para suportar futuras iniciativas de transformação digital, como microsserviços, inteligência artificial e aplicações Cloud Native.
+
+<img src="docs/ganhos governanca.png"/>
 ---
 
 ## 📚 Índice
@@ -97,6 +138,46 @@ Segurança: uso de Security Groups, IAM e WAF para proteger cada camada.
 
 Elasticidade vs. Escalabilidade: foco em elasticidade — reduzir recursos em períodos de baixa e expandir em picos.
 
+Embora frequentemente utilizados como sinônimos, elasticidade e escalabilidade representam conceitos distintos na computação em nuvem.
+
+Escalabilidade
+
+A escalabilidade é a capacidade de uma infraestrutura suportar o crescimento da carga de trabalho por meio da adição de recursos computacionais, mantendo o desempenho da aplicação.
+
+Esse crescimento pode ocorrer de duas formas:
+
+Escalabilidade vertical (Scale Up): aumento da capacidade de um único servidor, por exemplo, adicionando mais CPU, memória ou armazenamento.
+Escalabilidade horizontal (Scale Out): adição de novas instâncias ou servidores para distribuir a carga entre múltiplos recursos.
+
+No CloudEdu AWS Platform, a escalabilidade é implementada por meio do Amazon EC2 Auto Scaling, que adiciona automaticamente novas instâncias EC2 quando a demanda aumenta, garantindo que a aplicação continue atendendo aos usuários com desempenho adequado.
+
+Elasticidade
+
+A elasticidade representa a capacidade da infraestrutura de crescer e reduzir automaticamente sua capacidade conforme a variação da demanda, utilizando apenas os recursos necessários em cada momento.
+
+Enquanto a escalabilidade preocupa-se com a capacidade de crescimento, a elasticidade busca equilibrar desempenho e eficiência financeira, reduzindo recursos quando eles deixam de ser necessários.
+
+No projeto, a elasticidade é obtida através do Amazon EC2 Auto Scaling, configurado para:
+
+aumentar automaticamente a quantidade de instâncias durante campanhas de matrícula;
+reduzir a quantidade de instâncias em períodos de baixa utilização;
+evitar desperdício de recursos e custos desnecessários.
+
+Essa característica está diretamente relacionada ao modelo Pay-as-you-go da AWS, no qual a organização paga apenas pelos recursos efetivamente utilizados.
+
+Aplicação no CloudEdu AWS Platform
+
+O cenário da Escola Tech apresenta uma característica bastante comum em aplicações web: períodos de utilização estável intercalados com picos repentinos de acesso durante campanhas de marketing.
+
+Nesse contexto:
+
+a escalabilidade garante que a aplicação tenha capacidade para atender ao aumento do número de usuários sem perda de desempenho;
+a elasticidade assegura que essa capacidade adicional seja utilizada apenas enquanto houver necessidade, reduzindo automaticamente os recursos quando o tráfego retornar aos níveis normais.
+
+Dessa forma, a arquitetura atende simultaneamente aos requisitos de desempenho, disponibilidade e otimização de custos definidos para o projeto.
+
+
+
 Health Checks: ALB monitora instâncias e o Auto Scaling substitui automaticamente servidores não saudáveis.
 ---
 
@@ -116,11 +197,11 @@ Custos otimizados: reduzir recursos em períodos de baixa utilização.
 
 ## 🏗️ Arquitetura e Diagramas
 **Principais componentes**: Route 53, CloudFront, AWS WAF, ALB, EC2 (Graviton) em Auto Scaling Group, RDS Multi-AZ, S3, IAM, Secrets Manager, CloudWatch, X-Ray, SNS.  
-**Diagramas** (em `docs/arquitetura/`):
-- `diagrama-arquitetura.png` — visão geral
+**Diagramas**
+- `diagrama-arquitetura.png` — visão geral  <img src="docs/logogrupo.png"/>
 - `diagrama-elasticidade.png` — fluxo de Auto Scaling
-- `diagrama-seguranca.png` — camadas de segurança
-- `diagrama-finops.png` — visão de custos
+- `<img src="docs/servicos_seguranca_aws.png"/>` — camadas de segurança
+- ` <img src="docs/finOps e governanca AWS.png"/> — visão de custos
 
 **Legenda**: *Fonte: Elaboração própria — Team 3*
 
@@ -155,11 +236,134 @@ Custos otimizados: reduzir recursos em períodos de baixa utilização.
 **Controles e serviços**: IAM (least privilege), MFA, Security Groups, NACLs, AWS WAF, AWS Shield, AWS KMS, AWS Secrets Manager, GuardDuty, Security Hub, AWS Config, CloudTrail.  
 **Conformidade**: arquitetura alinhada a LGPD, NIST e ISO/IEC 27001 (observação: conformidade formal requer auditoria externa).
 
+<img src="docs/camadas_servicos_rede.png"/>
+
 ---
 
 ## 📈 Observabilidade
 **Stack**: CloudWatch (metrics, logs, dashboards), CloudWatch Alarms, CloudTrail, AWS X-Ray, ADOT/OpenTelemetry, Grafana/Prometheus (opcional).  
 **Alertas**: SNS para notificações e integração com canais de operação.
+
+<img src="docs/Praticas de seguranca.png"/>
+
+Observabilidade
+
+A observabilidade é um dos pilares fundamentais de arquiteturas modernas em computação em nuvem. Seu objetivo é fornecer visibilidade contínua sobre o comportamento da infraestrutura e das aplicações, permitindo identificar falhas, monitorar desempenho, analisar eventos e responder rapidamente a incidentes.
+
+No CloudEdu AWS Platform, foi proposta uma estratégia de observabilidade baseada em serviços nativos da AWS e ferramentas amplamente utilizadas pelo mercado, contemplando monitoramento, registro de eventos, rastreamento distribuído e geração de alertas.
+
+Ferramentas adotadas
+Amazon CloudWatch
+
+O Amazon CloudWatch é o principal serviço de monitoramento da AWS, responsável pela coleta e visualização de métricas, logs e eventos da infraestrutura.
+
+No projeto, o CloudWatch foi selecionado para:
+
+Monitorar utilização de CPU, memória, rede e armazenamento;
+Coletar logs das instâncias EC2 e demais serviços AWS;
+Criar dashboards operacionais em tempo real;
+Acompanhar indicadores de disponibilidade e desempenho da aplicação.
+
+Sua integração nativa com os serviços da AWS reduz a complexidade operacional e facilita o gerenciamento centralizado da infraestrutura.
+
+CloudWatch Alarms
+
+Os CloudWatch Alarms complementam o monitoramento contínuo ao permitir a criação de regras automáticas baseadas em métricas.
+
+No projeto, esses alarmes podem ser utilizados para:
+
+Detectar aumento anormal da utilização de CPU;
+Monitorar indisponibilidade das instâncias EC2;
+Identificar falhas no Application Load Balancer;
+Gerar alertas quando limites operacionais forem excedidos.
+
+Essa abordagem reduz o tempo de resposta a incidentes e aumenta a confiabilidade da solução.
+
+AWS CloudTrail
+
+O AWS CloudTrail registra todas as ações realizadas na conta AWS, criando uma trilha de auditoria completa.
+
+Sua utilização permite:
+
+Registrar alterações na infraestrutura;
+Auditar atividades administrativas;
+Identificar alterações de configuração;
+Apoiar investigações de incidentes de segurança;
+Atender requisitos de conformidade e governança.
+
+O CloudTrail fortalece a rastreabilidade das operações realizadas no ambiente.
+
+AWS X-Ray
+
+O AWS X-Ray realiza o rastreamento distribuído das requisições realizadas pela aplicação.
+
+Sua utilização permite:
+
+Identificar gargalos de desempenho;
+Medir tempos de resposta entre componentes;
+Visualizar o fluxo completo das requisições;
+Facilitar a identificação da origem de falhas.
+
+Embora seja mais utilizado em arquiteturas baseadas em microsserviços e aplicações serverless, sua inclusão demonstra como a arquitetura pode evoluir futuramente.
+
+AWS Distro for OpenTelemetry (ADOT)
+
+O AWS Distro for OpenTelemetry (ADOT) é a distribuição oficial da AWS baseada no projeto OpenTelemetry.
+
+Sua utilização permite padronizar a coleta de:
+
+Métricas;
+Logs;
+Traces distribuídos.
+
+Além disso, facilita futuras integrações com ferramentas externas de observabilidade, reduzindo o risco de dependência de fornecedores específicos (vendor lock-in).
+
+Grafana e Prometheus (Opcional)
+
+Embora o ambiente proposto utilize prioritariamente os serviços nativos da AWS, o projeto também considera a integração com ferramentas amplamente adotadas pelo mercado.
+
+Prometheus
+
+Coleta métricas da infraestrutura;
+Armazena séries temporais;
+Possui grande adoção em ambientes Kubernetes e Cloud Native.
+
+Grafana
+
+Cria dashboards altamente personalizáveis;
+Consolida métricas provenientes de diferentes fontes;
+Facilita análises operacionais em tempo real.
+
+Essas ferramentas representam uma evolução natural da arquitetura para ambientes corporativos mais complexos.
+
+Amazon SNS
+
+O Amazon Simple Notification Service (SNS) foi escolhido como mecanismo de envio de notificações automáticas.
+
+Sua utilização permite encaminhar alertas provenientes do CloudWatch para diferentes canais, como:
+
+E-mail;
+SMS;
+Aplicações;
+Webhooks;
+Microsoft Teams;
+Slack.
+
+Dessa forma, equipes de operação podem ser notificadas imediatamente sobre eventos críticos, reduzindo o tempo médio de resposta (MTTR).
+
+Benefícios para o CloudEdu AWS Platform
+
+A adoção dessa estratégia de observabilidade proporciona diversos benefícios para a arquitetura proposta:
+
+Monitoramento contínuo da infraestrutura.
+Identificação proativa de falhas.
+Redução do tempo de detecção e resolução de incidentes.
+Auditoria completa das ações realizadas na conta AWS.
+Maior disponibilidade da aplicação.
+Apoio à tomada de decisão baseada em métricas.
+Evolução para ambientes Cloud Native e microsserviços.
+Alinhamento às melhores práticas do AWS Well-Architected Framework, especialmente aos pilares de Operational Excellence, Reliability e Security.
+<img src="docs/principais_riscos_site.png"/>
 
 ---
 
@@ -168,7 +372,216 @@ Custos otimizados: reduzir recursos em períodos de baixa utilização.
 - **Ferramentas**: AWS Budgets (alertas 50/80/100%), Cost Explorer, Cost Anomaly Detection, Compute Optimizer, tagging para alocação de custos.  
 - **Práticas**: desligamento automático de ambientes não críticos, uso de Spot Instances quando aplicável, rightsizing periódico.
 
----
+Boas práticas para gestão de custos na AWS
+
+A estratégia de gerenciamento financeiro adotada neste projeto está baseada em quatro pilares: Monitorar, Economizar, Planejar e Executar.
+
+1. Monitorar
+
+O monitoramento contínuo dos custos permite acompanhar o consumo dos recursos e identificar rapidamente alterações no comportamento da infraestrutura.
+
+As principais ferramentas utilizadas são:
+
+AWS Cost Explorer: fornece análises detalhadas da evolução dos custos, permitindo visualizar despesas por serviço, período, conta ou região.
+Cost Allocation Tags: possibilitam classificar recursos por projeto, ambiente, centro de custo ou departamento, facilitando a identificação da origem dos gastos.
+AWS Budgets: permite definir limites de orçamento e emitir alertas automáticos quando determinados percentuais de consumo são atingidos.
+
+O monitoramento constante aumenta a previsibilidade financeira e auxilia na tomada de decisões estratégicas.
+
+2. Economizar
+
+A otimização de custos consiste em utilizar os recursos necessários para atender aos requisitos da aplicação, evitando desperdícios sem comprometer desempenho, disponibilidade ou segurança.
+
+Entre as principais práticas destacam-se:
+
+Revisar periodicamente a utilização dos recursos computacionais.
+Dimensionar corretamente instâncias, armazenamento e banco de dados.
+Utilizar o AWS Trusted Advisor para identificar oportunidades de otimização.
+Empregar Reserved Instances ou Savings Plans quando houver cargas de trabalho previsíveis, possibilitando economias significativas em relação aos preços sob demanda.
+Eliminar recursos ociosos, snapshots antigos, volumes não utilizados e endereços IP públicos sem utilização.
+
+Essas ações contribuem diretamente para a redução dos custos operacionais da infraestrutura.
+
+3. Planejar
+
+O planejamento financeiro permite que a organização mantenha previsibilidade sobre seus gastos e estabeleça metas compatíveis com o orçamento disponível.
+
+As principais atividades incluem:
+
+Elaborar estimativas de custos utilizando o AWS Pricing Calculator.
+Definir orçamentos mensais para cada ambiente.
+Estabelecer indicadores financeiros para acompanhamento contínuo.
+Comparar custos previstos e realizados, permitindo ajustes na arquitetura sempre que necessário.
+
+No CloudEdu AWS Platform, foram definidos dois cenários distintos:
+
+Modelo A (Free Tier / Ambiente Acadêmico): voltado para estudos, laboratórios e demonstrações, priorizando o menor custo possível.
+Modelo B (Enterprise): destinado a ambientes corporativos, mantendo orçamento controlado e escalabilidade conforme a demanda.
+
+Essa abordagem demonstra a evolução da solução desde um ambiente acadêmico até uma arquitetura preparada para produção.
+
+4. Executar
+
+Após o planejamento, é fundamental automatizar os processos de governança financeira para reduzir erros operacionais e responder rapidamente a alterações no consumo.
+
+As principais práticas adotadas incluem:
+
+Automação de alertas financeiros por meio do AWS Budgets.
+Utilização do AWS Cost Anomaly Detection para identificar comportamentos anormais de consumo e detectar aumentos inesperados de custos.
+Organização de múltiplas contas utilizando o AWS Organizations e o AWS Control Tower, garantindo padronização, governança e controle financeiro.
+Aplicação de políticas de cobrança e gerenciamento centralizado utilizando o AWS Billing and Cost Management Console.
+
+A automação reduz o risco de gastos inesperados e melhora significativamente a governança dos ambientes em nuvem.
+  
+##  Gerenciamento e responsabilidades
+
+Modelo de Responsabilidade Compartilhada
+
+<img src="docs/Camada de responsabilidades AWS.png"/>
+
+Em ambos os modelos propostos, a arquitetura segue o Modelo de Responsabilidade Compartilhada da Amazon Web Services (AWS), no qual parte da segurança é responsabilidade da AWS e parte permanece sob responsabilidade do cliente.
+
+A AWS é responsável pela segurança da nuvem (Security of the Cloud), enquanto a equipe responsável pelo CloudEdu AWS Platform é responsável pela segurança na nuvem (Security in the Cloud).
+
+Responsabilidades da AWS
+
+Nos dois modelos (A e B), permanecem sob responsabilidade da AWS:
+
+Segurança física dos Data Centers
+Energia elétrica
+Climatização
+Proteção contra incêndio
+Infraestrutura global
+Backbone mundial
+Hardware
+Virtualização
+Rede física
+Disponibilidade das Availability Zones
+Operação dos serviços gerenciados
+
+Esses componentes não precisam ser administrados pela equipe do projeto.
+
+Responsabilidades do Projeto (Modelo A)
+
+O Modelo A foi concebido para laboratórios, estudos e prototipação utilizando o AWS Free Tier.
+
+A equipe é responsável por:
+
+Configuração da VPC
+Configuração das Subnets
+Configuração dos Security Groups
+Configuração do ALB
+Configuração do Auto Scaling
+Configuração das instâncias EC2
+Atualizações do sistema operacional
+Atualizações da aplicação
+Gerenciamento de usuários IAM
+MFA
+Políticas IAM
+Configuração do CloudWatch
+Configuração do CloudTrail
+Configuração do AWS Budgets
+Backup do banco
+Monitoramento
+Controle de custos
+
+Como se trata de um ambiente acadêmico, alguns serviços corporativos podem não ser utilizados para reduzir custos.
+
+Responsabilidades do Projeto (Modelo B)
+
+No ambiente Enterprise, a responsabilidade aumenta devido à adoção de serviços adicionais de segurança, governança e observabilidade.
+
+Além das atividades do Modelo A, a equipe administra:
+
+AWS WAF
+AWS Shield
+AWS Config
+AWS Organizations
+AWS Control Tower
+Security Hub
+GuardDuty
+Secrets Manager
+AWS KMS
+SNS
+Dashboards corporativos
+X-Ray
+ADOT/OpenTelemetry
+Grafana
+Prometheus
+Cost Explorer
+Cost Anomaly Detection
+Cost Allocation Tags
+Trusted Advisor
+Pipeline CI/CD
+CloudFormation (IaC)
+Políticas de conformidade
+Governança FinOps
+
+Comparativo entre os Modelos
+| Item                 | Modelo A (Free Tier)   | Modelo B (Enterprise)                              |
+| -------------------- | ---------------------- | -------------------------------------------------- |
+| Objetivo             | Estudos e prototipação | Produção                                           |
+| Alta disponibilidade | Básica                 | Avançada                                           |
+| Auto Scaling         | ✅                      | ✅                                                  |
+| Segurança            | Essencial              | Multicamadas                                       |
+| Observabilidade      | CloudWatch             | CloudWatch + X-Ray + ADOT + Grafana                |
+| Governança           | Básica                 | Completa                                           |
+| FinOps               | AWS Budgets            | Budgets + Cost Explorer + Anomaly Detection + Tags |
+| Backup               | Básico                 | Estratégia corporativa                             |
+| Conformidade         | Parcial                | LGPD + NIST + Well-Architected + CAF               |
+| CI/CD                | Opcional               | Completo                                           |
+| IaC                  | Opcional               | CloudFormation                                     |
+
+Evolução da responsabilidade
+
+Uma forma didática de explicar durante a defesa é mostrar que quanto mais serviços gerenciados são adotados, menor é a responsabilidade operacional sobre a infraestrutura e maior é o foco na gestão da aplicação, segurança e governança.
+| Camada                  | Modelo A | Modelo B |
+| ----------------------- | -------- | -------- |
+| Infraestrutura física   | AWS      | AWS      |
+| Rede física             | AWS      | AWS      |
+| Virtualização           | AWS      | AWS      |
+| Sistema Operacional EC2 | Projeto  | Projeto  |
+| Aplicação               | Projeto  | Projeto  |
+| Dados                   | Projeto  | Projeto  |
+| IAM                     | Projeto  | Projeto  |
+| Monitoramento           | Projeto  | Projeto  |
+| Custos                  | Projeto  | Projeto  |
+| Segurança lógica        | Projeto  | Projeto  |
+| Compliance              | Básico   | Avançado |
+
+
+## 💸 Comparando AWS com as outras Clouds
+Por que comparar a AWS com outros provedores de nuvem?
+
+A comparação entre a AWS e outros provedores de computação em nuvem, como Microsoft Azure, Google Cloud Platform (GCP) e Oracle Cloud Infrastructure (OCI), foi incorporada ao projeto para demonstrar que a escolha da plataforma não ocorreu por preferência pessoal, mas sim por meio de uma análise técnica fundamentada.
+
+Em projetos de arquitetura de soluções, é esperado que diferentes alternativas sejam avaliadas antes da definição da tecnologia adotada. Essa abordagem demonstra capacidade de análise crítica, conhecimento do mercado e alinhamento com boas práticas de engenharia.
+
+A comparação permitiu identificar aspectos como:
+
+disponibilidade dos serviços;
+maturidade da plataforma;
+escalabilidade;
+segurança;
+recursos de observabilidade;
+ferramentas de governança;
+gerenciamento de custos;
+facilidade de adoção;
+documentação oficial;
+curva de aprendizagem;
+participação de mercado.
+
+Após essa análise, concluiu-se que a Amazon Web Services (AWS) apresentava maior aderência aos objetivos propostos pelo projeto, especialmente por oferecer um amplo portfólio de serviços gerenciados, elevada maturidade tecnológica, extensa documentação oficial e forte alinhamento com os conteúdos abordados durante a formação da Escola da Nuvem.
+
+A comparação também evidencia que muitos dos conceitos arquiteturais apresentados  como alta disponibilidade, elasticidade, escalabilidade, observabilidade e segurança são independentes do provedor utilizado. O que muda é a implementação por meio dos serviços equivalentes de cada plataforma.
+
+Dessa forma, o trabalho não se limita ao uso da AWS, mas demonstra conhecimento dos principais provedores de nuvem existentes no mercado e dos critérios utilizados na tomada de decisão arquitetura.
+
+Comparação Free Tier Clouds
+<img src="docs/comparativo freetier cloud.png"/>
+
+Comparação entre as principais Clouds
+<img src="docs/comparativo entre as  cloud custo brasil.png"/>
 
 ## 🚀 Como reproduzir / Deploy (exemplos mínimos)
 **Pré-requisitos**
