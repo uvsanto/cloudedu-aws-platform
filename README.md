@@ -38,7 +38,7 @@ O **CloudEdu AWS Platform** é uma arquitetura de referência em AWS para a plat
 
 ---
 
-## ✔️ Principais Características
+## ✅ Principais Características
 | Característica | Status |
 |---|:---:|
 | Alta Disponibilidade | ✅ |
