@@ -1,100 +1,155 @@
-[README.md](https://github.com/user-attachments/files/30143556/README.md)
+<div align="center">
 
-![CloudEdu AWS Platform](docs/Copilot_20260722_014221.png)
+<img src="docs/imagens/banner.png" alt="Banner CloudEdu AWS Platform" width="100%"/>
 
-Projeto de Trabalho de Conclusão de Curso (TCC) — Escola da Nuvem, Team 3.
+# ☁️ CloudEdu AWS Platform
 
-Solução de infraestrutura em nuvem para hospedagem resiliente e elástica da página de matrículas da **Escola Tech**, uma plataforma fictícia de cursos online, construída sobre a AWS.
+### Hospedagem resiliente e elástica para a Escola Tech  
+**TCC – Escola da Nuvem · Team 3**
 
-## 📋 Descrição do problema
+</div>
 
-A Escola Tech enfrentava indisponibilidade recorrente do site de matrículas durante campanhas de marketing em redes sociais, quando o volume de acessos simultâneos excedia a capacidade do servidor local. O projeto propõe uma arquitetura que resolve três requisitos centrais:
+[![AWS](https://img.shields.io/badge/AWS-Cloud-orange)]()
+[![Cloud Computing](https://img.shields.io/badge/Cloud-Computing-blue)]()
+[![Well-Architected](https://img.shields.io/badge/AWS-Well--Architected-success)]()
+[![FinOps](https://img.shields.io/badge/FinOps-Foundation-green)]()
+[![IaC](https://img.shields.io/badge/IaC-CloudFormation-yellow)]()
+[![License](https://img.shields.io/badge/license-MIT-blue)]()
 
-- **Resiliência**: o site não pode cair mesmo que um data center da AWS falhe.
-- **Elasticidade**: a capacidade deve crescer automaticamente em picos de tráfego e reduzir em períodos ociosos.
-- **Custo controlado**: pagar apenas pela capacidade efetivamente utilizada.
+---
 
-## 🏗️ Arquitetura da solução
+## 📖 Resumo Executivo
+O **CloudEdu AWS Platform** é uma arquitetura de referência em AWS para a plataforma fictícia **Escola Tech**, projetada para suportar picos de tráfego em campanhas de matrícula com **alta disponibilidade**, **elasticidade**, **segurança em camadas**, **observabilidade** e **controle de custos**. O projeto apresenta dois modelos: **Modelo A (Free Tier / Acadêmico)** e **Modelo B (Enterprise)**.
 
-![Diagrama de arquitetura](docs/arquitetura/diagrama-arquitetura.png)
+---
 
-O tráfego passa primeiro por uma camada de borda (**Route 53** + **CloudFront** + **AWS WAF**), que resolve o DNS, faz cache de conteúdo estático e filtra ameaças antes de chegar ao **Application Load Balancer**. O ALB direciona as requisições para instâncias **EC2** gerenciadas por um **Auto Scaling Group**, replicadas em duas **Availability Zones** dentro de uma **VPC** segmentada em subnets públicas e privadas. Os dados ficam no **RDS** (registros acadêmicos) e no **S3** (materiais didáticos e assets estáticos do site).
+## ✅ Conformidade com Frameworks
+| Framework | Status |
+|---|:---:|
+| AWS Well-Architected Framework | ✅ |
+| AWS Cloud Adoption Framework (CAF) | ✅ |
+| FinOps Foundation | ✅ |
+| DevOps | ✅ |
+| SRE | ✅ |
+| LGPD | ✅ |
+| NIST Cybersecurity Framework | ✅ |
+| Observabilidade | ✅ |
 
-| Componente | Serviço AWS | Função |
-|---|---|---|
-| DNS | Route 53 | Resolução de DNS com health check do endpoint público |
-| Borda / cache / segurança | CloudFront + AWS WAF | Absorve picos de tráfego, cacheia conteúdo estático, filtra ameaças |
-| Balanceamento de carga | Application Load Balancer | Distribui tráfego HTTP/HTTPS e executa health checks |
-| Computação | EC2 (Graviton) + Auto Scaling Group | Hospeda a aplicação; escalonamento por Target Tracking, Scheduled e Predictive Scaling |
-| Rede | VPC multi-AZ | Isola subnets públicas e privadas em 2 AZs, com NAT Gateway por AZ |
-| Dados | RDS (Multi-AZ) + S3 | Persistência de registros acadêmicos e armazenamento de arquivos |
-| Segurança | Security Groups em camadas + IAM + Secrets Manager | ALB aceita apenas o CloudFront; EC2 aceita apenas o ALB; credenciais nunca em texto puro |
+---
 
-Documentação detalhada de cada decisão em [`docs/decisoes-tecnicas.md`](docs/decisoes-tecnicas.md).
+## ✔️ Principais Características
+| Característica | Status |
+|---|:---:|
+| Alta Disponibilidade | ✅ |
+| Elasticidade | ✅ |
+| Escalabilidade Automática | ✅ |
+| Segurança em Camadas | ✅ |
+| Observabilidade | ✅ |
+| Governança | ✅ |
+| Infraestrutura como Código (IaC) | ✅ |
+| Backup & DR | ✅ |
+| FinOps | ✅ |
+| Multi-AZ | ✅ |
+| Comparativo Multi-Cloud | ✅ |
 
-### Fluxo de elasticidade
+---
 
-![Diagrama de elasticidade](docs/arquitetura/diagrama-elasticidade.png)
+## 📚 Índice
+- [Visão Geral](#visão-geral)  
+- [Contexto do Problema](#contexto-do-problema)  
+- [Arquitetura e Diagramas](#arquitetura-e-diagramas)  
+- [Modelo A (Free Tier)](#modelo-a-free-tier)  
+- [Modelo B (Enterprise)](#modelo-b-enterprise)  
+- [Estimativa de Custos](#estimativa-de-custos)  
+- [Segurança](#segurança)  
+- [Observabilidade](#observabilidade)  
+- [FinOps](#finops)  
+- [Como reproduzir / Deploy](#como-reproduzir--deploy)  
+- [Materiais de Defesa](#materiais-de-defesa)  
+- [Roadmap](#roadmap)  
+- [Autores](#autores)  
+- [Licença](#licença)
 
-O Auto Scaling Group usa uma política de target tracking baseada em utilização média de CPU: cria instâncias quando a demanda sobe e as remove — somente após o Load Balancer parar de rotear tráfego para elas — quando a demanda cai.
+---
 
-## 💰 Estimativa de custos
+## 🌎 Visão Geral
+O CloudEdu AWS Platform foi desenvolvido como TCC para propor uma arquitetura moderna em nuvem que substitua a infraestrutura on-premises da Escola Tech, eliminando pontos únicos de falha e permitindo escalabilidade automática durante campanhas de marketing.
 
-Estimativa mensal aproximada (região us-east-1, tráfego moderado). Detalhamento completo em [`docs/custos.md`](docs/custos.md).
+---
 
-| Componente | Custo estimado |
-|---|---|
-| EC2 (2 a 6 instâncias t3.micro) | US$ 15 – 20 |
-| Application Load Balancer | US$ 22 – 28 |
-| NAT Gateway | US$ 33 |
-| **Total aproximado** | **US$ 75 – 90/mês** |
+## 🎯 Contexto do Problema
+Durante campanhas, o portal de matrículas sofria indisponibilidade por falta de elasticidade e redundância. O objetivo é garantir disponibilidade contínua, reduzir latência e controlar custos operacionais.
 
-> Valores de referência. Recomenda-se validar com o [AWS Pricing Calculator](https://calculator.aws/) antes de qualquer implantação real.
+---
+
+## 🏗️ Arquitetura e Diagramas
+**Principais componentes**: Route 53, CloudFront, AWS WAF, ALB, EC2 (Graviton) em Auto Scaling Group, RDS Multi-AZ, S3, IAM, Secrets Manager, CloudWatch, X-Ray, SNS.  
+**Diagramas** (em `docs/arquitetura/`):
+- `diagrama-arquitetura.png` — visão geral
+- `diagrama-elasticidade.png` — fluxo de Auto Scaling
+- `diagrama-seguranca.png` — camadas de segurança
+- `diagrama-finops.png` — visão de custos
+
+**Legenda**: *Fonte: Elaboração própria — Team 3*
+
+---
+
+## 🧩 Modelo A (Free Tier / Acadêmico)
+- Uso de instâncias elegíveis ao Free Tier; CloudFront para cache; S3 para assets; RDS em configuração mínima.
+- Objetivo: demonstração, PoC e laboratórios com custo reduzido.
+
+---
+
+## 🏢 Modelo B (Enterprise)
+- Multi-AZ, RDS Aurora (ou RDS Multi-AZ), ALB, Auto Scaling com políticas Target Tracking e Scheduled, WAF, Shield, Secrets Manager, KMS, CloudTrail, GuardDuty, Security Hub.
+- Objetivo: produção com governança, segurança e FinOps.
+
+---
+
+## 💰 Estimativa de Custos (região de referência: **sa-east-1**)
+> Valores aproximados para tráfego moderado. Validar com AWS Pricing Calculator antes de implantação.
+
+| Componente | Estimativa (mensal) |
+|---|---:|
+| EC2 (2 a 6 x t3.micro) | **R$ 90 – 120** |
+| Application Load Balancer | **R$ 130 – 160** |
+| NAT Gateway | **R$ 200** |
+| **Total aproximado** | **R$ 420 – 500 / mês** |
+
+---
 
 ## 🔒 Segurança
+**Controles e serviços**: IAM (least privilege), MFA, Security Groups, NACLs, AWS WAF, AWS Shield, AWS KMS, AWS Secrets Manager, GuardDuty, Security Hub, AWS Config, CloudTrail.  
+**Conformidade**: arquitetura alinhada a LGPD, NIST e ISO/IEC 27001 (observação: conformidade formal requer auditoria externa).
 
-- Security Groups seguindo o princípio do menor privilégio (ALB expõe 80/443 à internet; EC2 só aceita tráfego do ALB).
-- [ ] IAM roles com permissões mínimas necessárias — *pendente de documentação*
-- [ ] Credenciais via variáveis de ambiente / Secrets Manager — *pendente*
+---
 
-## 🚀 Como reproduzir
+## 📈 Observabilidade
+**Stack**: CloudWatch (metrics, logs, dashboards), CloudWatch Alarms, CloudTrail, AWS X-Ray, ADOT/OpenTelemetry, Grafana/Prometheus (opcional).  
+**Alertas**: SNS para notificações e integração com canais de operação.
 
-### Pré-requisitos
+---
 
-- Conta AWS ativa
-- AWS CLI configurado
-- *(preencher: Terraform / CloudFormation, se aplicável)*
+## 💸 FinOps & Governança
+- **Teto orçamentário**: R$ 2.000/mês (exemplo de política).  
+- **Ferramentas**: AWS Budgets (alertas 50/80/100%), Cost Explorer, Cost Anomaly Detection, Compute Optimizer, tagging para alocação de custos.  
+- **Práticas**: desligamento automático de ambientes não críticos, uso de Spot Instances quando aplicável, rightsizing periódico.
 
-### Passo a passo
+---
 
-1. Clone este repositório
-2. Configure as variáveis de ambiente com base em `.env.example`
-3. *(preencher conforme o método de implantação escolhido: console manual, CloudFormation ou Terraform)*
-4. Acesse a aplicação pelo DNS do Load Balancer, disponível no console EC2
+## 🚀 Como reproduzir / Deploy (exemplos mínimos)
+**Pré-requisitos**
+- Conta AWS com permissões de administrador (ou role apropriada)
+- AWS CLI configurado (`aws configure`)
+- Terraform 1.x ou AWS CloudFormation CLI
 
-## 📁 Estrutura do repositório
+**CloudFormation (exemplo)**
+```bash
+# validar template
+aws cloudformation validate-template --template-body file://infraestrutura/template.yaml
 
-```
-├── docs/
-│   ├── arquitetura/          # diagramas da solução
-│   ├── decisoes-tecnicas.md  # justificativa das escolhas técnicas
-│   └── custos.md             # estimativa de custos detalhada
-├── infraestrutura/           # scripts de IaC (CloudFormation/Terraform)
-├── README.md
-└── .env.example
-```
+# criar stack
+aws cloudformation create-stack --stack-name cloudedu --template-body file://infraestrutura/template.yaml --capabilities CAPABILITY_NAMED_IAM
 
-## 🧑🏻‍💻 Autores
-
-Desenvolvido pelo **Team 3** — Escola da Nuvem:
-
-- Vagner Tomaz dos Santos
-- Jefferson Da Mata Dos Reis
-- Daniel Victor Moreira Braga
-- Evandro Gomes Lemos
-- Daniel Tadao Silva Shimada
-- Marcos Roberto De Andrade
-
-## 📄 Licença
-
-*(definir, se aplicável)*
+# atualizar stack
+aws cloudformation update-stack --stack-name cloudedu --template-body file://infraestrutura/template.yaml --capabilities CAPABILITY_NAMED_IAM
