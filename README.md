@@ -2,10 +2,10 @@
 
 <img src="docs/banner.png" alt="Banner CloudEdu AWS Platform" width="100%"/>
 
-# ☁️ CloudEdu AWS Platform
+### Projeto de Trabalho de Conclusão de Curso (TCC) 
 
-### Hospedagem resiliente e elástica para a Escola Tech  
-<img src="docs/logogrupo.png/>
+Arquitetura de referência em Amazon Web Services (AWS) para hospedagem resiliente, escalável, segura e otimizada em custos da plataforma fictícia **Escola Tech**, desenvolvida para suportar grandes campanhas de matrícula com alta disponibilidade e excelente experiência do usuário.
+<img src="docs/logogrupo.png"/>
 
 
 </div>
