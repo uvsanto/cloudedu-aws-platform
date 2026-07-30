@@ -5,7 +5,8 @@
 # ☁️ CloudEdu AWS Platform
 
 ### Hospedagem resiliente e elástica para a Escola Tech  
-**TCC – Escola da Nuvem · Team 3*
+<img src="docs/logogrupo.png/>
+
 
 </div>
 
