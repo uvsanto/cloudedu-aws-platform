@@ -130,12 +130,13 @@ Custos otimizados: reduzir recursos em períodos de baixa utilização.
 - Uso de instâncias elegíveis ao Free Tier; CloudFront para cache; S3 para assets; RDS em configuração mínima.
 - Objetivo: demonstração, PoC e laboratórios com custo reduzido.
 
+<img src="docs/AWS Architecture2.jpeg"/>   
 ---
 
 ## 🏢 Modelo B (Enterprise)
 - Multi-AZ, RDS Aurora (ou RDS Multi-AZ), ALB, Auto Scaling com políticas Target Tracking e Scheduled, WAF, Shield, Secrets Manager, KMS, CloudTrail, GuardDuty, Security Hub.
 - Objetivo: produção com governança, segurança e FinOps.
-
+<img src="docs/Diagrama - Modelo B.png"/>
 ---
 
 ## 💰 Estimativa de Custos (região de referência: **sa-east-1**)
