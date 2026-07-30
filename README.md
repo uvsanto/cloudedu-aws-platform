@@ -1,6 +1,7 @@
 [README.md](https://github.com/user-attachments/files/30143556/README.md)
 
-![CloudEdu AWS Platform](docs/banner.png)
+![CloudEdu AWS Platform](docs/docs/Copilot_20260722_014221.png)
+
 Projeto de Trabalho de Conclusão de Curso (TCC) — Escola da Nuvem, Team 3.
 
 Solução de infraestrutura em nuvem para hospedagem resiliente e elástica da página de matrículas da **Escola Tech**, uma plataforma fictícia de cursos online, construída sobre a AWS.
