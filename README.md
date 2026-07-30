@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/imagens/banner.png" alt="Banner CloudEdu AWS Platform" width="100%"/>
+<img src="docs/banner.png" alt="Banner CloudEdu AWS Platform" width="100%"/>
 
 # ☁️ CloudEdu AWS Platform
 
