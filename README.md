@@ -20,8 +20,14 @@ Arquitetura de referência em Amazon Web Services (AWS) para hospedagem resilien
 ---
 
 ## 📖 Resumo Executivo
-O **CloudEdu AWS Platform** é uma arquitetura de referência em AWS para a plataforma fictícia **Escola Tech**, projetada para suportar picos de tráfego em campanhas de matrícula com **alta disponibilidade**, **elasticidade**, **segurança em camadas**, **observabilidade** e **controle de custos**. O projeto apresenta dois modelos: **Modelo A (Free Tier / Acadêmico)** e **Modelo B (Enterprise)**.
+O CloudEdu AWS Platform, desenvolvido pelo Team 3 da Escola da Nuvem, apresenta uma arquitetura de referência em Amazon Web Services (AWS) para a plataforma fictícia Escola Tech.
+O objetivo é demonstrar como a nuvem pode oferecer alta disponibilidade, elasticidade, segurança em múltiplas camadas, observabilidade e controle de custos em cenários de grande demanda.
 
+O projeto contempla dois cenários complementares:
+
+Modelo A (Free Tier / Acadêmico): explora a viabilidade de construir uma solução funcional na AWS utilizando créditos e serviços gratuitos, sem custo inicial.
+
+Modelo B (Enterprise): simula um ambiente corporativo com orçamento controlado de R$ 2.000/mês, ajustável em períodos críticos de matrícula e rematrícula, assegurando previsibilidade tecnológica e financeira.
 ---
 
 ## ✅ Conformidade com Frameworks
@@ -73,13 +79,38 @@ O **CloudEdu AWS Platform** é uma arquitetura de referência em AWS para a plat
 
 ---
 
-## 🌎 Visão Geral
-O CloudEdu AWS Platform foi desenvolvido como TCC para propor uma arquitetura moderna em nuvem que substitua a infraestrutura on-premises da Escola Tech, eliminando pontos únicos de falha e permitindo escalabilidade automática durante campanhas de marketing.
+🌎 Visão Geral da Solução
+A arquitetura proposta combina serviços gerenciados da AWS para atender aos requisitos de disponibilidade, elasticidade e segurança:
 
+Elastic Load Balancing (ALB): distribui requisições de forma inteligente entre instâncias, evitando sobrecarga.
+
+Amazon EC2 com Auto Scaling: hospeda o site em instâncias que aumentam ou reduzem automaticamente conforme a demanda.
+
+Amazon VPC (Multi-AZ): rede privada que garante redundância entre zonas de disponibilidade.
+
+Amazon RDS (Multi-AZ): banco de dados resiliente com failover automático.
+
+Amazon S3: armazenamento de ativos estáticos e mídias educacionais.
+
+Pontos de Atenção
+Segurança: uso de Security Groups, IAM e WAF para proteger cada camada.
+
+Elasticidade vs. Escalabilidade: foco em elasticidade — reduzir recursos em períodos de baixa e expandir em picos.
+
+Health Checks: ALB monitora instâncias e o Auto Scaling substitui automaticamente servidores não saudáveis.
 ---
 
 ## 🎯 Contexto do Problema
-Durante campanhas, o portal de matrículas sofria indisponibilidade por falta de elasticidade e redundância. O objetivo é garantir disponibilidade contínua, reduzir latência e controlar custos operacionais.
+A Escola Tech é uma plataforma de cursos online que precisa lançar uma nova página de matrículas.
+O desafio: lidar com tráfego constante e picos súbitos de acessos em campanhas digitais, sem travamentos e sem custos excessivos.
+
+Atualmente, o site roda em infraestrutura local (on-premises), que falha em momentos de alta demanda. A solução proposta é migrar para a AWS, garantindo:
+
+Resiliência: manter o site disponível mesmo em caso de falhas.
+
+Escalabilidade automática: absorver picos de tráfego sem intervenção manual.
+
+Custos otimizados: reduzir recursos em períodos de baixa utilização.
 
 ---
 
