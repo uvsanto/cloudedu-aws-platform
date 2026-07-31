@@ -465,7 +465,7 @@ Modelo A (AWS Free Tier / Acadêmico)
                               │
                      AWS IAM + Security Groups
 
-──────────────────────────────────────────────────────────────
+
 
             Observabilidade e Gestão de Custos
 
@@ -512,9 +512,9 @@ SNS
               │                                 │
          Amazon S3                        IAM Roles
               │
-──────────────────────────────────────────────────────────────
+
+
                Observabilidade e Governança
-──────────────────────────────────────────────────────────────
 CloudWatch • CloudTrail • AWS Config • GuardDuty
 Security Hub • AWS Budgets • Cost Explorer
 SNS • AWS X-Ray • AWS Backup
@@ -541,7 +541,7 @@ SNS • AWS X-Ray • AWS Backup
                           │
       Security Group (Somente EC2 → RDS)
 
-────────────────────────────────────────────
+
 
               🔐 Gestão de Identidade
 
@@ -550,7 +550,6 @@ IAM Roles
 IAM Policies
 MFA
 
-────────────────────────────────────────────
 
            📊 Auditoria e Monitoramento
 
@@ -558,7 +557,6 @@ CloudTrail
 CloudWatch
 CloudWatch Logs
 
-────────────────────────────────────────────
 
              💾 Proteção dos Dados
 
@@ -566,7 +564,6 @@ Amazon S3
 S3 Block Public Access
 S3 Versioning (Opcional)
 
-────────────────────────────────────────────
 
           💰 Governança de Custos
 
@@ -598,9 +595,9 @@ Camadas de Segurança (Modelo B – Enterprise)
                     Application Load Balancer
                       (TLS + Health Checks)
                                    │
-────────────────────────────────────────────────────────────
+
                      CAMADA DE REDE
-────────────────────────────────────────────────────────────
+
 
                          Amazon VPC
       ┌──────────────────────────────────────────────┐
@@ -616,9 +613,9 @@ Camadas de Segurança (Modelo B – Enterprise)
                                    │
                      Security Groups (Least Privilege)
                                    │
-────────────────────────────────────────────────────────────
+
                  IDENTIDADE E ACESSO
-────────────────────────────────────────────────────────────
+
 
 IAM
 IAM Roles
@@ -626,9 +623,9 @@ IAM Policies
 MFA
 Secrets Manager
 
-────────────────────────────────────────────────────────────
+
                 PROTEÇÃO DOS DADOS
-────────────────────────────────────────────────────────────
+
 
 Amazon RDS
 Amazon S3
@@ -637,18 +634,18 @@ S3 Versioning
 Object Lock
 Backup
 
-────────────────────────────────────────────────────────────
+
                AUDITORIA E COMPLIANCE
-────────────────────────────────────────────────────────────
+
 
 CloudTrail
 AWS Config
 Security Hub
 GuardDuty
 
-────────────────────────────────────────────────────────────
+
                OBSERVABILIDADE
-────────────────────────────────────────────────────────────
+
 
 CloudWatch
 CloudWatch Logs
@@ -657,9 +654,8 @@ AWS X-Ray
 ADOT/OpenTelemetry
 Amazon SNS
 
-────────────────────────────────────────────────────────────
                GOVERNANÇA E FINOPS
-────────────────────────────────────────────────────────────
+
 
 AWS Organizations
 AWS Control Tower
@@ -697,7 +693,7 @@ Visão de Custos (Modelo A – Free Tier)
  Cost Allocation Tags
  (Projeto, Ambiente, Equipe)
 
-────────────────────────────────────────────
+
 
         Recursos monitorados
 
@@ -718,7 +714,7 @@ Camadas da Gestão de Custos
 | Organização   | Cost Allocation Tags   | Identificar custos por projeto, ambiente ou equipe |
 | Consolidação  | AWS Billing Dashboard  | Acompanhar a fatura da conta                       |
 
-────────────────────────────────────────────
+
 
            Objetivos
 
@@ -741,18 +737,18 @@ Visão de Custos (Modelo B – Enterprise)
                            ▼
                AWS Billing & Cost Management
                            │
-──────────────────────────────────────────────────────
+
               PLANEJAMENTO FINANCEIRO
-──────────────────────────────────────────────────────
+
 
 AWS Pricing Calculator
         │
         ▼
 Estimativa dos custos da arquitetura
 
-──────────────────────────────────────────────────────
+
           MONITORAMENTO E VISIBILIDADE
-──────────────────────────────────────────────────────
+
 
 AWS Cost Explorer
         │
@@ -767,9 +763,9 @@ Ambiente
 Equipe
 Centro de Custos
 
-──────────────────────────────────────────────────────
+
           CONTROLE ORÇAMENTÁRIO
-──────────────────────────────────────────────────────
+
 
 AWS Budgets
         │
@@ -792,18 +788,18 @@ Microsoft Teams
 
 Slack
 
-──────────────────────────────────────────────────────
+
       DETECÇÃO AUTOMÁTICA DE ANOMALIAS
-──────────────────────────────────────────────────────
+
 
 AWS Cost Anomaly Detection
         │
         ▼
 Identifica aumentos inesperados de custos
 
-──────────────────────────────────────────────────────
+
         OTIMIZAÇÃO CONTÍNUA
-──────────────────────────────────────────────────────
+
 
 AWS Trusted Advisor
         │
@@ -820,9 +816,9 @@ IPs Elásticos
 
 Load Balancers
 
-──────────────────────────────────────────────────────
+
              GOVERNANÇA FINANCEIRA
-──────────────────────────────────────────────────────
+
 
 AWS Organizations
 
@@ -832,9 +828,9 @@ Políticas de Custos
 
 Padronização de Contas
 
-──────────────────────────────────────────────────────
+
               RECURSOS MONITORADOS
-──────────────────────────────────────────────────────
+
 
 Amazon EC2
 
@@ -856,7 +852,7 @@ CloudWatch
 
 Backup
 
-──────────────────────────────────────────────────────
+
 
              Objetivos
 
