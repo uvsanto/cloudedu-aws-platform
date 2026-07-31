@@ -176,9 +176,28 @@ a elasticidade assegura que essa capacidade adicional seja utilizada apenas enqu
 
 Dessa forma, a arquitetura atende simultaneamente aos requisitos de desempenho, disponibilidade e otimização de custos definidos para o projeto.
 
-
+<img src="docs/escala elasticidade.png"/>   
 
 Health Checks: ALB monitora instâncias e o Auto Scaling substitui automaticamente servidores não saudáveis.
+O Application Load Balancer (ALB) realiza verificações periódicas de integridade (Health Checks) nas instâncias EC2. Caso uma instância seja considerada não saudável (Unhealthy), o ALB interrompe automaticamente o encaminhamento de requisições para esse recurso, enquanto o Amazon EC2 Auto Scaling substitui a instância por uma nova, restaurando a capacidade e a disponibilidade da aplicação.
+
+Auto Scaling Group (ASG):
+
+Ao detectar que uma instância está “não saudável”, o ASG substitui automaticamente por uma nova, criada a partir do Launch Template.
+
+Isso garante que o grupo mantenha sempre o número mínimo de instâncias definido.
+
+🎯 Benefício prático
+Alta disponibilidade: usuários não percebem falhas individuais.
+
+Elasticidade confiável: o sistema cresce e encolhe sem risco de direcionar tráfego para instâncias quebradas.
+
+Automação: elimina necessidade de intervenção manual para reiniciar ou substituir servidores.
+
+> ⚡ **Health Checks Automáticos**  
+> O ALB monitora continuamente as instâncias EC2.  
+> Se uma instância falhar, o tráfego é interrompido e o Auto Scaling cria uma nova automaticamente, garantindo alta disponibilidade.
+
 ---
 
 ## 🎯 Contexto do Problema
@@ -197,11 +216,677 @@ Custos otimizados: reduzir recursos em períodos de baixa utilização.
 
 ## 🏗️ Arquitetura e Diagramas
 **Principais componentes**: Route 53, CloudFront, AWS WAF, ALB, EC2 (Graviton) em Auto Scaling Group, RDS Multi-AZ, S3, IAM, Secrets Manager, CloudWatch, X-Ray, SNS.  
+
+<img src="docs/Status.png"/>   
+
 **Diagramas**
-- `diagrama-arquitetura.png` — visão geral  <img src="docs/logogrupo.png"/>
-- `diagrama-elasticidade.png` — fluxo de Auto Scaling
+- Diagrama de Elasticidade — visão geral
+Modelo A (AWS Free Tier)
+                     👥 Usuários
+                          │
+                          ▼
+              Application Load Balancer
+                          │
+                          ▼
+                 Auto Scaling Group
+              Política: Target Tracking
+                   CPU média = 60%
+
+              ┌───────────────────────┐
+              │     Baixa Demanda     │
+              │                       │
+              │     1 Instância EC2   │
+              │      (mínimo)         │
+              └───────────────────────┘
+                          │
+                  CPU > 60%
+                          ▼
+              ┌───────────────────────┐
+              │      Pico de Acesso   │
+              │                       │
+              │    2 Instâncias EC2   │
+              │      (máximo)         │
+              └───────────────────────┘
+                          │
+                CPU reduz (<40%)
+                          ▼
+          Auto Scaling remove automaticamente
+             a segunda instância EC2
+  
+  Fluxo operacional
+
+CloudWatch
+
+↓
+
+CPU > 60%
+
+↓
+
+Auto Scaling
+
+↓
+
+Nova EC2
+
+↓
+
+ALB adiciona a instância
+
+↓
+
+Mais capacidade
+
+
+CPU < 40%
+
+↓
+
+Auto Scaling
+
+↓
+
+Remove EC2 excedente
+
+↓
+
+Redução de custos
+
+Componentes AWS
+| Serviço                   | Função                    |
+| ------------------------- | ------------------------- |
+| Amazon EC2                | Hospedagem da aplicação   |
+| Auto Scaling              | Escalabilidade automática |
+| Application Load Balancer | Distribuição do tráfego   |
+| Amazon CloudWatch         | Monitoramento de métricas |
+| Amazon RDS (Single-AZ)    | Banco de dados            |
+| Amazon S3                 | Arquivos estáticos        |
+
+Auto Scaling
+| Configuração        | Valor                                        |
+| ------------------- | -------------------------------------------- |
+| Instâncias mínimas  | 1                                            |
+| Capacidade desejada | 1                                            |
+| Instâncias máximas  | 2                                            |
+| Métrica             | CPU média                                    |
+| Target Tracking     | 60%                                          |
+| Scale In            | CPU abaixo de 40% por um período configurado |
+
+
+
+(Modelo B)
+                     👥 Usuários
+                          │
+                          ▼
+                Application Load Balancer
+                          │
+                Health Checks contínuos
+                          │
+                          ▼
+                Auto Scaling Group (ASG)
+        Política: Target Tracking (CPU = 60%)
+
+          ┌───────────────────────────────────┐
+          │           Baixa Demanda           │
+          │                                   │
+          │        2 Instâncias EC2           │
+          │     (capacidade mínima)           │
+          └───────────────────────────────────┘
+                          │
+                  CPU aumenta (>60%)
+                          ▼
+          ┌───────────────────────────────────┐
+          │          Média Demanda            │
+          │                                   │
+          │        4 Instâncias EC2           │
+          └───────────────────────────────────┘
+                          │
+                  CPU continua alta
+                          ▼
+          ┌───────────────────────────────────┐
+          │          Alta Demanda             │
+          │                                   │
+          │        6 Instâncias EC2           │
+          │     (capacidade máxima)           │
+          └───────────────────────────────────┘
+                          │
+               CPU reduz (<40% por um período)
+                          ▼
+        Auto Scaling encerra instâncias excedentes
+        apenas após o ALB parar de enviar tráfego
+
+        Componentes AWS
+        | Camada         | Serviço                   |
+| -------------- | ------------------------- |
+| Entrada        | Application Load Balancer |
+| Escalabilidade | Auto Scaling Group        |
+| Computação     | Amazon EC2                |
+| Monitoramento  | Amazon CloudWatch         |
+| Banco          | Amazon RDS                |
+| Arquivos       | Amazon S3                 |
+
+Fluxo operacional
+
+CloudWatch Metrics
+
+↓
+
+CPU média > 60%
+
+↓
+
+Auto Scaling
+
+↓
+
+Nova EC2 criada
+
+↓
+
+Health Check
+
+↓
+
+ALB adiciona a instância
+
+↓
+
+Mais capacidade
+
+Quando a carga diminui:
+
+CloudWatch
+
+↓
+
+CPU média < 40%
+
+↓
+
+Auto Scaling
+
+↓
+
+Remove uma EC2
+
+↓
+
+ALB deixa de enviar tráfego
+
+↓
+
+Instância é encerrada
+
+↓
+
+Redução de custos
+
+Escala horizontal automática
+
+Mínimo: 2 instâncias
+Desejado: 2–4 instâncias
+Máximo: 6 instâncias
+
+CloudWatch:
+Métricas monitoradas
+
+CPU
+Network In/Out
+Request Count
+Healthy Hosts
+Latência
+
+Health Checks
+
+Verifica disponibilidade das instâncias
+Remove instâncias não saudáveis
+Redireciona o tráfego automaticamente
+
+Diagrama arquitetura
+
+Modelo A (AWS Free Tier / Acadêmico)
+
+                         Internet
+                              │
+                       Amazon Route 53
+                              │
+                    Application Load Balancer
+                              │
+                ┌────────────────────────────┐
+                │                            │
+                │  Amazon EC2 (Auto Scaling) │
+                │     Min: 1  Max: 2         │
+                │                            │
+                └─────────────┬──────────────┘
+                              │
+                     Amazon RDS (Single-AZ)
+                              │
+                         Amazon S3
+                              │
+                     AWS IAM + Security Groups
+
+──────────────────────────────────────────────────────────────
+
+            Observabilidade e Gestão de Custos
+
+CloudWatch
+CloudTrail
+AWS Budgets
+Cost Explorer
+SNS
+
+(Modelo B – Enterprise)
+
+                           Internet
+                               │
+                     Amazon Route 53 (DNS)
+                               │
+                    AWS Shield Standard
+                               │
+                          Amazon CloudFront
+                               │
+                           AWS WAF
+                               │
+                ┌─────────────────────────┐
+                │ Application Load Balancer│
+                └─────────────────────────┘
+                         │             │
+             Availability Zone A   Availability Zone B
+                    │                     │
+        ┌─────────────────┐    ┌─────────────────┐
+        │ Private Subnet  │    │ Private Subnet  │
+        │                 │    │                 │
+        │ EC2             │    │ EC2             │
+        │ Auto Scaling    │    │ Auto Scaling    │
+        └─────────────────┘    └─────────────────┘
+                    │                     │
+                    └──────────┬──────────┘
+                               │
+                    Amazon RDS (Multi-AZ)
+                               │
+                     AWS Secrets Manager
+                               │
+                          AWS KMS
+                               │
+              ┌─────────────────────────────────┐
+              │                                 │
+         Amazon S3                        IAM Roles
+              │
+──────────────────────────────────────────────────────────────
+               Observabilidade e Governança
+──────────────────────────────────────────────────────────────
+CloudWatch • CloudTrail • AWS Config • GuardDuty
+Security Hub • AWS Budgets • Cost Explorer
+SNS • AWS X-Ray • AWS Backup
+
 - `<img src="docs/servicos_seguranca_aws.png"/>` — camadas de segurança
+  Camadas de Segurança (Modelo A)
+                      🌐 Internet
+                          │
+                          ▼
+                Amazon Route 53 (DNS)
+                          │
+                          ▼
+          Application Load Balancer (HTTPS)
+                          │
+        Security Group (HTTP/HTTPS somente)
+                          │
+                          ▼
+                  Amazon EC2 (Web Server)
+                          │
+        Security Group (Apenas ALB → EC2)
+                          │
+                          ▼
+               Amazon RDS (Single-AZ)
+                          │
+      Security Group (Somente EC2 → RDS)
+
+────────────────────────────────────────────
+
+              🔐 Gestão de Identidade
+
+IAM Users
+IAM Roles
+IAM Policies
+MFA
+
+────────────────────────────────────────────
+
+           📊 Auditoria e Monitoramento
+
+CloudTrail
+CloudWatch
+CloudWatch Logs
+
+────────────────────────────────────────────
+
+             💾 Proteção dos Dados
+
+Amazon S3
+S3 Block Public Access
+S3 Versioning (Opcional)
+
+────────────────────────────────────────────
+
+          💰 Governança de Custos
+
+AWS Budgets
+AWS Cost Explorer
+SNS (Alertas)
+
+Camadas de Segurança (Modelo B – Enterprise)
+
+                              🌐 Internet
+                                   │
+                                   ▼
+                           AWS Shield Advanced
+                      (Proteção contra DDoS)
+                                   │
+                                   ▼
+                               AWS WAF
+               (Proteção contra OWASP Top 10)
+                                   │
+                                   ▼
+                           Amazon CloudFront
+                 (CDN + Cache + TLS/HTTPS)
+                                   │
+                                   ▼
+                           Amazon Route 53
+                    (DNS + Health Checks)
+                                   │
+                                   ▼
+                    Application Load Balancer
+                      (TLS + Health Checks)
+                                   │
+────────────────────────────────────────────────────────────
+                     CAMADA DE REDE
+────────────────────────────────────────────────────────────
+
+                         Amazon VPC
+      ┌──────────────────────────────────────────────┐
+      │                                              │
+      │ Public Subnets                               │
+      │   └── ALB                                    │
+      │                                              │
+      │ Private Subnets                              │
+      │   ├── EC2 Auto Scaling                       │
+      │   └── Amazon RDS Multi-AZ                    │
+      │                                              │
+      └──────────────────────────────────────────────┘
+                                   │
+                     Security Groups (Least Privilege)
+                                   │
+────────────────────────────────────────────────────────────
+                 IDENTIDADE E ACESSO
+────────────────────────────────────────────────────────────
+
+IAM
+IAM Roles
+IAM Policies
+MFA
+Secrets Manager
+
+────────────────────────────────────────────────────────────
+                PROTEÇÃO DOS DADOS
+────────────────────────────────────────────────────────────
+
+Amazon RDS
+Amazon S3
+AWS KMS
+S3 Versioning
+Object Lock
+Backup
+
+────────────────────────────────────────────────────────────
+               AUDITORIA E COMPLIANCE
+────────────────────────────────────────────────────────────
+
+CloudTrail
+AWS Config
+Security Hub
+GuardDuty
+
+────────────────────────────────────────────────────────────
+               OBSERVABILIDADE
+────────────────────────────────────────────────────────────
+
+CloudWatch
+CloudWatch Logs
+CloudWatch Alarms
+AWS X-Ray
+ADOT/OpenTelemetry
+Amazon SNS
+
+────────────────────────────────────────────────────────────
+               GOVERNANÇA E FINOPS
+────────────────────────────────────────────────────────────
+
+AWS Organizations
+AWS Control Tower
+AWS Budgets
+Cost Explorer
+Cost Allocation Tags
+Trusted Advisor
+Cost Anomaly Detection
+
+
 - ` <img src="docs/finOps e governanca AWS.png"/> — visão de custos
+
+Diagrama
+Visão de Custos (Modelo A – Free Tier)
+                   💰 Gestão de Custos
+                  Modelo A (AWS Free Tier)
+
+                         👤 Usuário
+                             │
+                             ▼
+                  AWS Billing Dashboard
+             (Visão consolidada dos gastos)
+                             │
+         ┌───────────────────┼───────────────────┐
+         ▼                   ▼                   ▼
+ AWS Cost Explorer      AWS Budgets      AWS Pricing Calculator
+ Análise do consumo     Limites e        Estimativa de custos
+ por serviço            alertas          antes da implantação
+         │                   │
+         │                   ▼
+         │             Amazon SNS
+         │         (Notificações por e-mail)
+         │
+         ▼
+ Cost Allocation Tags
+ (Projeto, Ambiente, Equipe)
+
+────────────────────────────────────────────
+
+        Recursos monitorados
+
+EC2
+ALB
+EBS
+S3
+RDS
+Transferência de Dados
+
+Camadas da Gestão de Custos
+| Camada        | Serviço AWS            | Objetivo                                           |
+| ------------- | ---------------------- | -------------------------------------------------- |
+| Planejamento  | AWS Pricing Calculator | Estimar custos antes da implantação                |
+| Monitoramento | AWS Cost Explorer      | Visualizar consumo e tendências                    |
+| Controle      | AWS Budgets            | Definir limites financeiros                        |
+| Alertas       | Amazon SNS             | Notificar quando limites forem atingidos           |
+| Organização   | Cost Allocation Tags   | Identificar custos por projeto, ambiente ou equipe |
+| Consolidação  | AWS Billing Dashboard  | Acompanhar a fatura da conta                       |
+
+────────────────────────────────────────────
+
+           Objetivos
+
+✓ Permanecer dentro do Free Tier
+✓ Monitorar gastos mensalmente
+✓ Evitar cobranças inesperadas
+✓ Apoiar o aprendizado em FinOps
+
+Visão de Custos (Modelo B – Enterprise)
+                           💰 FINOPS
+                   Modelo B (Enterprise)
+
+                     Equipe Financeira
+                           │
+        ┌──────────────────┼──────────────────┐
+        │                  │                  │
+        ▼                  ▼                  ▼
+   Gestores TI       Arquitetos Cloud      Operações
+                           │
+                           ▼
+               AWS Billing & Cost Management
+                           │
+──────────────────────────────────────────────────────
+              PLANEJAMENTO FINANCEIRO
+──────────────────────────────────────────────────────
+
+AWS Pricing Calculator
+        │
+        ▼
+Estimativa dos custos da arquitetura
+
+──────────────────────────────────────────────────────
+          MONITORAMENTO E VISIBILIDADE
+──────────────────────────────────────────────────────
+
+AWS Cost Explorer
+        │
+        ▼
+Análise de consumo por serviço
+
+        │
+        ▼
+Cost Allocation Tags
+Projeto
+Ambiente
+Equipe
+Centro de Custos
+
+──────────────────────────────────────────────────────
+          CONTROLE ORÇAMENTÁRIO
+──────────────────────────────────────────────────────
+
+AWS Budgets
+        │
+        ▼
+Limites de gastos
+
+50%
+
+80%
+
+100%
+
+        │
+        ▼
+Amazon SNS
+
+E-mail
+
+Microsoft Teams
+
+Slack
+
+──────────────────────────────────────────────────────
+      DETECÇÃO AUTOMÁTICA DE ANOMALIAS
+──────────────────────────────────────────────────────
+
+AWS Cost Anomaly Detection
+        │
+        ▼
+Identifica aumentos inesperados de custos
+
+──────────────────────────────────────────────────────
+        OTIMIZAÇÃO CONTÍNUA
+──────────────────────────────────────────────────────
+
+AWS Trusted Advisor
+        │
+        ▼
+Recomendações para redução de custos
+
+↓
+
+EC2 ociosas
+
+Volumes EBS
+
+IPs Elásticos
+
+Load Balancers
+
+──────────────────────────────────────────────────────
+             GOVERNANÇA FINANCEIRA
+──────────────────────────────────────────────────────
+
+AWS Organizations
+
+AWS Control Tower
+
+Políticas de Custos
+
+Padronização de Contas
+
+──────────────────────────────────────────────────────
+              RECURSOS MONITORADOS
+──────────────────────────────────────────────────────
+
+Amazon EC2
+
+Application Load Balancer
+
+Amazon RDS
+
+Amazon S3
+
+NAT Gateway
+
+CloudFront
+
+Route 53
+
+AWS WAF
+
+CloudWatch
+
+Backup
+
+──────────────────────────────────────────────────────
+
+             Objetivos
+
+✓ Previsibilidade Financeira
+
+✓ Controle Orçamentário
+
+✓ Governança FinOps
+
+✓ Otimização Contínua
+
+✓ Eliminar desperdícios
+
+✓ Maximizar ROI
+
+Camadas de Gestão de Custos
+| Camada        | Serviço AWS                       | Objetivo                                                   |
+| ------------- | --------------------------------- | ---------------------------------------------------------- |
+| Planejamento  | AWS Pricing Calculator            | Estimar custos antes da implantação                        |
+| Faturamento   | AWS Billing & Cost Management     | Consolidar e visualizar os gastos da conta                 |
+| Monitoramento | AWS Cost Explorer                 | Acompanhar consumo por serviço e tendências                |
+| Organização   | Cost Allocation Tags              | Classificar custos por projeto, ambiente e centro de custo |
+| Controle      | AWS Budgets                       | Definir limites de orçamento e acompanhar sua execução     |
+| Alertas       | Amazon SNS                        | Enviar notificações quando limites forem atingidos         |
+| Detecção      | AWS Cost Anomaly Detection        | Identificar aumentos inesperados de custos                 |
+| Otimização    | AWS Trusted Advisor               | Recomendar melhorias para redução de desperdícios          |
+| Governança    | AWS Organizations + Control Tower | Padronizar contas, políticas e governança financeira       |
+
+
+  
 
 **Legenda**: *Fonte: Elaboração própria — Team 3*
 
@@ -212,28 +897,88 @@ Custos otimizados: reduzir recursos em períodos de baixa utilização.
 - Objetivo: demonstração, PoC e laboratórios com custo reduzido.
 
 <img src="docs/AWS Architecture2.jpeg"/>   
+
+Novos clientes recebem até 200 USD em créditos
+Novos clientes da AWS podem começar sem nenhum custo com o nível gratuito da AWS. Ganhe 100 USD em créditos na inscrição e até 100 USD a mais à medida que você explora os principais serviços da AWS. Teste os serviços da AWS com o plano gratuito por até 6 meses. Você não receberá cobranças, a menos que escolha o plano pago, que permite escalar suas operações e obter acesso a mais de 150 serviços da AWS.
+
+Plano gratuito
+Experimente a AWS por até 6 meses sem custo ou compromisso
+
+ Receba até 200 USD em créditos
+
+ Inclui o uso gratuito de serviços selecionados
+
+ Não há cobranças, a menos que você mude para o plano pago
+
+ Workloads que ultrapassam os limites de crédito
+
+ Acesso a todos os serviços e recursos da AWS
+
+ | Serviço | Configuração | Estimativa mensal (USD) | Observações |
+| --- | --- | --- | --- |
+| **EC2 (Free Tier)** | 1 instância t2.micro (Linux) até 750h/mês | US$ 0,00 | Dentro do limite gratuito. |
+| **RDS (Free Tier)** | db.t2.micro (MySQL/Postgres) até 750h/mês | US$ 0,00 | Banco de dados básico. |
+| **S3** | 5 GB de armazenamento | US$ 0,00 | Hospedagem de arquivos estáticos. |
+| **CloudWatch** | Monitoramento básico (logs e métricas) | US$ 0,00 | Inclui 10 métricas e 5 GB de logs. |
+| **Route 53** | DNS gratuito até 50 domínios hospedados | US$ 0,00 | Apenas gerenciamento de zona. |
+| **IAM / Security Groups** | Controle de acesso | US$ 0,00 | Sem custo adicional. |
 ---
 
 ## 🏢 Modelo B (Enterprise)
 - Multi-AZ, RDS Aurora (ou RDS Multi-AZ), ALB, Auto Scaling com políticas Target Tracking e Scheduled, WAF, Shield, Secrets Manager, KMS, CloudTrail, GuardDuty, Security Hub.
 - Objetivo: produção com governança, segurança e FinOps.
+
+Plano pago
+Desenvolva workloads prontas para produção com acesso a mais de 150 serviços da AWS
+
+ Receba até 200 USD em créditos
+
+ Inclui o uso gratuito de serviços selecionados
+
+ Pagamento acima dos limites de crédito
+
+ Workloads que ultrapassam os limites de crédito
+
+ Acesso a todos os serviços e recursos da AWS
+  
 <img src="docs/Diagrama - Modelo B.png"/>
 ---
 
 ## 💰 Estimativa de Custos (região de referência: **sa-east-1**)
 > Valores aproximados para tráfego moderado. Validar com AWS Pricing Calculator antes de implantação.
 
-| Componente | Estimativa (mensal) |
-|---|---:|
-| EC2 (2 a 6 x t3.micro) | **R$ 90 – 120** |
-| Application Load Balancer | **R$ 130 – 160** |
-| NAT Gateway | **R$ 200** |
-| **Total aproximado** | **R$ 420 – 500 / mês** |
+Modelo A — Free Tier / Acadêmico
+Objetivo: demonstrar que é possível montar uma solução funcional na AWS sem custo inicial, aproveitando os limites do Free Tier.
+
+🧩 Componentes considerados
+
+| Serviço | Configuração | Estimativa mensal (USD) | Observações |
+| --- | --- | --- | --- |
+| **EC2 (Free Tier)** | 1 instância t2.micro (Linux) até 750h/mês | US$ 0,00 | Dentro do limite gratuito. |
+| **RDS (Free Tier)** | db.t2.micro (MySQL/Postgres) até 750h/mês | US$ 0,00 | Banco de dados básico. |
+| **S3** | 5 GB de armazenamento | US$ 0,00 | Hospedagem de arquivos estáticos. |
+| **CloudWatch** | Monitoramento básico (logs e métricas) | US$ 0,00 | Inclui 10 métricas e 5 GB de logs. |
+| **Route 53** | DNS gratuito até 50 domínios hospedados | US$ 0,00 | Apenas gerenciamento de zona. |
+| **IAM / Security Groups** | Controle de acesso | US$ 0,00 | Sem custo adicional. |
+
+Total estimado: US$ 0,00/mês  
+Região: sa-east-1 (São Paulo)  
+Cotação: USD/BRL ≈ 5,00 (referência julho/2026)
+
+✅ Resumo comparativo
+
+| Modelo | Descrição | Custo estimado | Objetivo |
+| --- | --- | --- | --- |
+| **A — Free Tier / Acadêmico** | Arquitetura mínima com serviços gratuitos (EC2 t2.micro, RDS Free Tier, S3 5GB). | **US$ 0,00/mês** | Demonstra viabilidade sem custo inicial. |
+| **B — Enterprise / Controlado** | Arquitetura completa com redundância, segurança e observabilidade. | **US$ 385–400/mês (~R$ 2.000)** | Garantir previsibilidade e alta disponibilidade. |
+
 
 ---
 
 ## 🔒 Segurança
 **Controles e serviços**: IAM (least privilege), MFA, Security Groups, NACLs, AWS WAF, AWS Shield, AWS KMS, AWS Secrets Manager, GuardDuty, Security Hub, AWS Config, CloudTrail.  
+<img src="docs/Status.png"/>
+
 **Conformidade**: arquitetura alinhada a LGPD, NIST e ISO/IEC 27001 (observação: conformidade formal requer auditoria externa).
 
 <img src="docs/camadas_servicos_rede.png"/>
