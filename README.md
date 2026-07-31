@@ -25,7 +25,7 @@ O objetivo é demonstrar como a nuvem pode oferecer alta disponibilidade, elasti
 
 <img src="docs/logogrupo.png"/>
 
-O projeto contempla dois cenários complementares:
+**O projeto contempla dois cenários complementares:**
 
 Modelo A (Free Tier / Acadêmico): explora a viabilidade de construir uma solução funcional na AWS utilizando créditos e serviços gratuitos, sem custo inicial.
 
@@ -55,9 +55,7 @@ A adoção dos principais frameworks de arquitetura, segurança, operações e g
 <img src="docs/ganhos framework.png"/>
 
 Benefícios Globais da Adoção desses Frameworks
-
 A combinação desses frameworks proporciona benefícios estratégicos para o projeto e para a organização, entre eles:
-
 Arquitetura alinhada às melhores práticas internacionais.
 Maior disponibilidade e confiabilidade da aplicação.
 Escalabilidade e elasticidade para suportar picos de acesso.
@@ -68,6 +66,7 @@ Monitoramento contínuo e resposta rápida a incidentes.
 Conformidade com requisitos regulatórios, como a LGPD.
 Facilidade de manutenção, evolução e expansão da infraestrutura.
 Base preparada para adoção futura de arquiteturas Cloud Native, microsserviços, contêineres e soluções de Inteligência Artificial.
+
 ---
 
 ## ✅ Principais Características
@@ -85,7 +84,7 @@ Base preparada para adoção futura de arquiteturas Cloud Native, microsserviço
 | Multi-AZ | ✅ |
 | Comparativo Multi-Cloud | ✅ |
 
-Benefícios Estratégicos da Arquitetura
+**Benefícios Estratégicos da Arquitetura**
 
 A combinação dessas características proporciona benefícios que vão além da infraestrutura tecnológica, contribuindo diretamente para os objetivos de negócio da Escola Tech:
 
@@ -120,7 +119,7 @@ Arquitetura preparada para suportar futuras iniciativas de transformação digit
 
 ---
 
-🌎 Visão Geral da Solução
+🌎** Visão Geral da Solução**
 A arquitetura proposta combina serviços gerenciados da AWS para atender aos requisitos de disponibilidade, elasticidade e segurança:
 
 Elastic Load Balancing (ALB): distribui requisições de forma inteligente entre instâncias, evitando sobrecarga.
@@ -133,7 +132,7 @@ Amazon RDS (Multi-AZ): banco de dados resiliente com failover automático.
 
 Amazon S3: armazenamento de ativos estáticos e mídias educacionais.
 
-Pontos de Atenção
+**Pontos de Atenção**
 Segurança: uso de Security Groups, IAM e WAF para proteger cada camada.
 
 Elasticidade vs. Escalabilidade: foco em elasticidade — reduzir recursos em períodos de baixa e expandir em picos.
