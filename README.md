@@ -5,7 +5,7 @@
 ### Projeto de Trabalho de Conclusão de Curso (TCC) 
 
 Arquitetura de referência em Amazon Web Services (AWS) para hospedagem resiliente, escalável, segura e otimizada em custos da plataforma fictícia **Escola Tech**, desenvolvida para suportar grandes campanhas de matrícula com alta disponibilidade e excelente experiência do usuário.
-<img src="docs/Itens do nosso projeto.png"/>
+
 
 
 </div>
